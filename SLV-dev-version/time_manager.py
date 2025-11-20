@@ -1,3 +1,5 @@
+import re
+
 class TimeManager(): 
     def __init__(self,fps=25):
         super().__init__()
@@ -42,3 +44,9 @@ class TimeManager():
     def m_to_frame(self, milliseconds):
         """Renvoie le numéro de frame correspondant à un temps en millisecondes."""
         return int((milliseconds / 1000) * self.fps)
+
+    def sanitize_timecodename(self, name):
+        return re.sub(r'[\\/:*?"<>|]', '-', name)
+    
+    def timecodename(self, milliseconds):
+        return self.sanitize_timecodename(self.m_to_hmsf(milliseconds))

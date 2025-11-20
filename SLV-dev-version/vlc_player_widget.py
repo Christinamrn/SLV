@@ -23,6 +23,7 @@ from time_manager import TimeManager
 from no_focus_push_button import NoFocusPushButton
 from message_popup import MessagePopUp
 
+
 class VLCPlayerWidget(QWidget):
     enable_segmentation = Signal(bool)
     enable_recording = Signal(bool)
@@ -264,6 +265,7 @@ class VLCPlayerWidget(QWidget):
         self.load_video(self.path_of_media,False)
 
 
+
     def capture_screenshot(self, name="",post_traitement=False,format_capture=False,gamma=1.4):
         """ Capture un screenshot de la vidéo. """
         if not os.path.exists(self.capture_dir):
@@ -271,7 +273,8 @@ class VLCPlayerWidget(QWidget):
 
         file_name = self.name_of_video()
         timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
-        timecode = self.time_manager.m_to_hmsf(self.player.get_time())
+        raw_timecode = self.time_manager.m_to_hmsf(self.player.get_time())
+        timecode = self.time_manager.sanitize_timecodename(raw_timecode)
         #framenumber = self.time_manager.m_to_frame(self.player.get_time())
 
         # Définir le chemin du fichier en fonction du format
@@ -417,7 +420,7 @@ class VLCPlayerWidget(QWidget):
         if not os.path.exists(self.capture_video_dir):
             os.makedirs(self.capture_video_dir)
         file_name = os.path.splitext(os.path.basename(self.path_of_media))[0]
-        capture_path = os.path.join(self.capture_video_dir, f"{file_name}_{self.time_manager.m_to_hmsf(self.start)}_{self.time_manager.m_to_hmsf(end_acc)}.mp4")
+        capture_path = os.path.join(self.capture_video_dir, f"{file_name}_{self.time_manager.timecodename(self.start)}_{self.time_manager.timecodename(end_acc)}.mp4")
         self.extract_segment_with_ffmpeg(self.path_of_media, self.start//1000, duration, capture_path)
         msg=MessagePopUp(self,txt="Capture vidéo enregistré dans SLV_Content/Captures_Vidéos")
         return capture_path

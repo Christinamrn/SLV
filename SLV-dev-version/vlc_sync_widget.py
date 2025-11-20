@@ -249,9 +249,9 @@ class SyncWidget(QWidget):
 
         combined_image=self.merge_image(loaded_images)
 
-        # Suppression des captures individuelles
-        for img_path in images:
-            os.remove(img_path)
+        # Suppression des captures individuelles -> UPDATE : On veut les garder pour utilsation ex pptx
+        #Sfor img_path in images:
+            #os.remove(img_path)
 
         name = "_".join(f"{i.name_of_video()[:5]}_{ts}" for i, ts in zip(self.player_widgets, timestamps))
 
