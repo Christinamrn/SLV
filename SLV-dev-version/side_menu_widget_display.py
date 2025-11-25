@@ -15,6 +15,7 @@ from time_manager import TimeManager
 from message_popup import MessagePopUp
 from no_focus_push_button import NoFocusPushButton
 from frame_previewer import FramePreviewer
+from export_manager import ExportManager
 
 class MyTextEdit(QTextEdit):
     def __init__(self, parent=None):
@@ -74,7 +75,6 @@ class SideMenuWidgetDisplay(QDockWidget):
 
         self.time_manager=TimeManager(fps=self.vlc_widget.fps)
 
-
     def select_plan(self,i):
         self.id_affichage=i
         self.reorganize_buttons()
@@ -103,9 +103,6 @@ class SideMenuWidgetDisplay(QDockWidget):
         # Réajoute un stretch à la fin
         self.layout.addStretch()
 
-
-
-
     #fonction d'ajout d'une nouveaux bouton
     def add_new_button(self, btn,rect,color,name="", time=0, end=0, verif=True, frame1=-1, frame2=-1):
         if verif and time >= self.max_time:
@@ -132,7 +129,7 @@ class SideMenuWidgetDisplay(QDockWidget):
 
         # Création du label pour afficher le timecode
         if end == 0:
-            time_label = QLabel("Début : " + self.time_manager.m_to_hmsf(time), self)
+            time_label = QLabel(f"Début : " + self.time_manager.m_to_hmsf(time), self)
         else:
             time_label = QLabel(f"Début : {self.time_manager.m_to_hmsf(time)} / Fin : {self.time_manager.m_to_hmsf(end)}", self)
 

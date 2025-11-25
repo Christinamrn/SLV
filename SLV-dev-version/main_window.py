@@ -555,6 +555,7 @@ class VLCMainWindow(QMainWindow):
     def export_action(self):
         if self.project:
             self.export=ExportManager(self.side_menu,self.vlc_widget,self.project,self.format_export_text)
+            #self.export.export_tagImages()
             self.save_state=True
         else:
             msg=MessagePopUp(self,titre="Attention",txt="Vous devez d'abord créer un projet",type="error")

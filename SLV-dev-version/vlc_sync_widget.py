@@ -263,6 +263,7 @@ class SyncWidget(QWidget):
             combined_path = os.path.join(capture_dir, f"{name}.png")
             combined_image.save(combined_path)
 
+        print(f"Capture combinée enregistrée : {combined_path}")
 
         return combined_image
 
@@ -349,7 +350,7 @@ class SyncWidget(QWidget):
 
     def merge_video_end(self):
         self.affichage_temp.hide_message()
-        msg=MessagePopUp(self,txt="Capture vidéo combiné enregistré dans SLV_Content/Captures_Vidéos")
+        msg=MessagePopUp(self,txt="Capture vidéos combinées enregistrée dans SLV_Content/Captures_Vidéos")
 
 
     def merge_video(self, video_paths):
@@ -362,12 +363,15 @@ class SyncWidget(QWidget):
                 return
             captures.append(cap)
 
-        # Récupérer le FPS de la première vidéo (on suppose que tous ont le même FPS)
+        # Récupérer le FPS de la première vidéo (on suppose que tous ont le même FPS) -> A CHANGER
         fps = captures[0].get(cv2.CAP_PROP_FPS)
 
         out_writer = None
-        timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
-        name = "_".join(i.name_of_video()[:5] for i in self.player_widgets)
+        #timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+        #name = "_".join(i.name_of_video()[:5] for i in self.player_widgets)
+        
+        name = "_".join(f"{i.name_of_video()[:5]}_{ts}" for i, ts in zip(self.player_widgets, timestamps))
+
         output_path = os.path.join(os.path.dirname(video_paths[0]), f"{name}.mp4")
 
         while True:
@@ -409,7 +413,7 @@ class SyncWidget(QWidget):
         if out_writer is not None:
             out_writer.release()
 
-        print(f"Vidéo fusionnée enregistrée : {output_path}")
+        print(f"Capture vidéos combinées enregistrée : {output_path}")
 
     def set_subtitles(self,id=-1):
         for i in self.player_widgets:

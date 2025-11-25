@@ -47,6 +47,7 @@ from message_popup import MessagePopUp
 from time_manager import TimeManager
 from exportvideo_thread import ExportVideoThread
 from exporttext_thread import ExportTextThread
+from exporttagimages_thread import ExportTagImagesThread
 from no_focus_push_button import NoFocusPushButton
 
 import logging
@@ -106,11 +107,14 @@ class ExportManager(QWidget):
         num_group = QButtonGroup(dialog)
         option_1 = QRadioButton("Fichier texte", dialog)
         option_2 = QRadioButton("Vidéo annotée", dialog)
+        option_3 = QRadioButton("TagImages", dialog)
         num_group.addButton(option_1)
         num_group.addButton(option_2)
+        num_group.addButton(option_3)
         option_1.setChecked(True)
         dialog_layout.addWidget(option_1)
         dialog_layout.addWidget(option_2)
+        dialog_layout.addWidget(option_3)
 
         dialog_load = QHBoxLayout()
         load = QLabel("")
@@ -141,10 +145,12 @@ class ExportManager(QWidget):
                         self.exported_thread = ExportTextThread(self,option=3)
                     elif self.format_export_text[3]:
                         self.exported_thread = ExportTextThread(self,option=4)
-                else:
+                elif option_2.isChecked():
                     self.default_file_path = os.path.join(self.file_path, f"{self.title}.mp4")
                     self.chosen_file_path, _ = QFileDialog.getSaveFileName(self, "Enregistrer l'exportation sous...", self.file_path, "Vidéo MP4 (*.mp4)")
                     self.exported_thread = ExportVideoThread(self)
+                else:
+                    self.exported_thread = ExportTagImagesThread(self)
 
                 self.exported_thread.segmentation_done.connect(lambda: export_done(dialog))
                 self.exported_thread.start()
@@ -206,7 +212,34 @@ class ExportManager(QWidget):
         new_width = int(width * ratio)
         new_height = int(height * ratio)
         return img_stream,new_width,new_height
+    
+    def export_tagImages(self, callback=None):
+        stock_images = self.get_images()
+        try:
+            tagImagesdir_path = os.path.join(self.file_path, "TagImages")
+            print(f"Path du dossier : {tagImagesdir_path}")
+            if os.path.exists(tagImagesdir_path):
+                shutil.rmtree(tagImagesdir_path)
+            os.makedirs(tagImagesdir_path)
 
+            for idx, btn_data in enumerate(self.seg.display.stock_button):
+                time_str = self.time_manager.timecodename(btn_data["time"])
+                tagImage_path = os.path.join(tagImagesdir_path, f"TagImage{idx}_{time_str}.png")
+                
+                if idx < len(stock_images):
+                    tagImage = stock_images[idx]
+
+                    tagImage_stream, _, _ = self.size_of_img(tagImage)
+                    tagImage_stream.seek(0)
+
+                    with open(tagImage_path, "wb") as f:
+                        f.write(tagImage_stream.read())
+                    print(f"Image exportée : {tagImage_path}")
+                else:
+                    print(f"Aucune image disponible pour le timecode {time_str}")
+        except Exception as e:
+            print(f"Erreur lors de l'exportation des images : {e}")
+    
     def export_txtV1(self, callback=None):
         self.file_path = os.path.join(self.file_path, f"{self.title}.txt")  # Correction de l'extension
 

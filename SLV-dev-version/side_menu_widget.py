@@ -485,6 +485,9 @@ class SideMenuWidget(QDockWidget):
             #fichier.write(f"{time[1]-time[0]}_{time[3]-time[2]}\n")
         #fichier.close()
 
+        if self.parent.project :
+            print("oui")
+
         print("Segmentation terminée en arrière-plan.")
         self.segmentation_done.emit(True)
 
