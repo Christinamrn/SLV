@@ -368,9 +368,9 @@ class SyncWidget(QWidget):
 
         out_writer = None
         #timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
-        #name = "_".join(i.name_of_video()[:5] for i in self.player_widgets)
-        
-        name = "_".join(f"{i.name_of_video()[:5]}_{ts}" for i, ts in zip(self.player_widgets, timestamps))
+        name = "_".join(f"{i.name_of_video()[:5]}_{i.time_manager.timecodename(i.start)}" for i in (self.player_widgets))
+
+        #name = "_".join(f"{i.name_of_video()[:5]}_{ts}" for i, ts in zip(self.player_widgets, timestamps))
 
         output_path = os.path.join(os.path.dirname(video_paths[0]), f"{name}.mp4")
 

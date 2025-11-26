@@ -272,7 +272,7 @@ class VLCPlayerWidget(QWidget):
             os.makedirs(self.capture_dir, exist_ok=True)
 
         file_name = self.name_of_video()
-        timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+        #timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
         raw_timecode = self.time_manager.m_to_hmsf(self.player.get_time())
         timecode = self.time_manager.sanitize_timecodename(raw_timecode)
         #framenumber = self.time_manager.m_to_frame(self.player.get_time())
